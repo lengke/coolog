@@ -1,0 +1,23 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "base.html" %}
+
+
+{% block title %}编辑文章{% endblock title%}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>编辑文章</h2>
+</div>
+
+
+{{render_form(form)}}
+
+<br>
+<br>
+
+<a class="btn btn-primary btn-sm" href="{{url_for('admin.manage_post')}}">退出编辑</a>
+
+{{ ckeditor.load(pkg_type="full") }}
+
+{% endblock content %}

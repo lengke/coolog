@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}关于我{% endblock title%}
+
+{% block content%}
+
+    <p><h1>关于作者</h1></p>
+
+    <div class="row">
+
+        <div class="col-sm-3">
+            <img class="rounded" src="static/pic/stars.jpg" />
+        </div>
+
+        <div class="col-sm-9">
+            <p>名字：{{admin.name}}</p>
+            <p>简介：{{admin.about}}</p>
+
+        </div>
+
+    </div>
+
+
+
+
+
+
+{% endblock content%}

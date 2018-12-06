@@ -1,0 +1,18 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "base.html" %}
+
+
+{% block title %}新建文章{% endblock title%}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>新建文章</h2>
+</div>
+
+
+{{render_form(form)}}
+
+{{ ckeditor.load(pkg_type="full") }}
+
+{% endblock content %}

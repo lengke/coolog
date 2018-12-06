@@ -1,0 +1,161 @@
+{% from "bootstrap/pagination.html" import render_pagination %}
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "base.html" %}
+
+{% block title %}{{post.title}}{% endblock title%}
+
+{% block content%}
+<div class="page-header">
+    <h1>{{post.title}}</h1>
+    <small>
+        类别：<a href="{{url_for('blog.show_category', category_id=post.its_category.id)}}">{{post.its_category.name}}</a> <br>
+        发表于：{{moment(post.timestamp).format("lll")}}
+    </small>
+
+<br>
+<br>
+    <!--管理员编辑或删除文章的按钮-->
+    {% if current_user.is_authenticated %}
+        <a class="btn btn-info btn-sm" href="{{url_for('admin.edit_post', post_id = post.id)}}">
+            编辑
+        </a>
+        <form class="inline" method="post" action="{{url_for('admin.delete_post', post_id=post.id, next= request.full_path)}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+            删除
+        </button>
+        </form>
+    {% endif %}
+</div>
+<br>
+
+<div class="row">
+
+    <div class="col-sm-9">
+
+        {{post.body|safe}}
+
+        <hr>
+
+        {% if current_user.is_authenticated%}
+        <div class="text-primary">
+                <a href="{{url_for('admin.close_comment', post_id = post.id, next=request.full_path)}}">
+                    {% if post.can_comment%}
+                    关闭本文评论区
+                    {% else %}
+                    开启本文评论区
+                    {% endif %}
+                </a>
+        </div>
+            <hr>
+        {% endif %}
+
+{% if post.can_comment%}
+        <div class="comments" id="comments">
+            <h4 class="py-3">共{{post.its_comments|length}}条评论：
+
+            <small>
+                <a href="{{url_for('blog.show_post', post_id=post.id, page=pagination.pages or 1)}}#comments">最新
+                </a>
+            </small>
+
+            </h4>
+
+            <!--渲染评论显示区-->
+
+            {% if comments%}
+                <ul class="list-group">
+                    {% for comment in comments %}
+                    <li class="list-group-item list-group-item-action flex-column">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                <!--判断回复的作者是不是管理员-->
+                                {% if comment.from_admin%}
+                                    {{ admin.name }}：
+                                {% else %}
+                                    {{ comment.author}}：
+                                {% endif %}
+                                <!--如果作者是管理员，则加上身份标志-->
+                                {% if comment.from_admin %}
+                                    <span class="badge badge-primary">博主</span>
+                                {% endif %}
+                            </h5>
+                            <small>{{moment(comment.timestamp).fromNow(refresh=True)}}</small>
+                        </div>
+
+                        <!--如果这是一条回复，则渲染专门的样式-->
+                        {% if comment.replied%}
+                            <p class="alert alert-dark reply-body">
+                                {{comment.replied.author}}：
+                                <br>
+                                {{comment.replied.body}}
+                            </p>
+                        {% endif %}
+
+                        <p class="mb-1 mt-2">{{comment.body}}</p>
+                        <div class="float-right">
+                            <a class="btn btn-success btn-sm"
+                               href="{{url_for('blog.reply_comment', comment_id=comment.id)}}#comment-form">
+                                回复
+                            </a>
+                        </div>
+                        <br>
+
+                        <!--管理员打回评论和删除评论的按钮-->
+                        {% if current_user.is_authenticated%}
+                        {% if comment.reviewed%}
+                        <a class="btn btn-info btn-sm" href="{{url_for('admin.review_comment',comment_id=comment.id, next=request.full_path)}}">
+                        打回
+                        </a>
+                        {% endif %}
+
+                        <form class="inline" method="post" action="{{url_for('admin.delete_comment', comment_id=comment.id, next=request.full_path)}}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                            删除
+                        </button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            <br>
+                {{render_pagination(pagination, fragment="#comments")}}
+            {% else %}
+                <h4>还没有任何评论</h4>
+            {% endif %}
+        </div>
+
+         <div id="comment-form">
+                <p class="py-2"><h4>无需注册、登陆即可发表评论</h4></p>
+                <!--如果是对已有评论的回复，则渲染显示被回复的用户名-->
+                {% if request.args.get("replied_author") %}
+                    <div class="alert alert-dark">
+                        正在回复 <strong>{{request.args.get("replied_author")}}</strong>
+                            <a class="float-right" href="{{url_for('blog.show_post', post_id = post.id)}}#comment-form">
+                                <strong>&times;</strong>
+                            </a>
+                    </div>
+                {% endif %}
+                <!--渲染评论表单-->
+                <div class="py-2 w-70">
+                    {{render_form(form, action=request.full_path)}}
+                </div>
+         </div>
+
+{% else %}
+        <ul class="list-group">
+        <div class="tip"><h5>本文已禁用评论功能</h5></div>
+        </ul>
+{% endif %}
+    <!--这是row下面第一个col div的结束标志-->
+    </div>
+
+    <div class="col-sm-3 sidebar">
+        {% include "blog/_sidebar.html" %}
+    </div>
+
+<!--这是最外层row的div-->
+</div>
+
+{% endblock content%}
