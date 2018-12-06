@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/perfect_blue.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+    <title>
+        {% block title %}{% endblock title%}
+    </title>
+{% endblock head%}
+</head>
+<body>
+
+<!--导航栏-->
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container">
+          <a class="navbar-brand" href="/">首页</a>
+      <button class="navbar-toggler" type="button"
+              data-toggle="collapse"
+              data-target="#navbarColor01"
+              aria-controls="navbarColor01"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarColor01">
+
+        <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item {%if request.endpoint and request.endpoint=='blog.about'%}active{% endif %}">
+                <a class="nav-link" href="{{url_for('blog.about')}}">关于我</a>
+            </li>
+
+        </ul>
+      </div>
+
+      {% if current_user.is_authenticated%}
+      <ul class="nav navbar-nav navbar-right">
+          <!--渲染显示"新建"下拉菜单-->
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                arial-expanded="false">
+                    新建 <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropDown">
+                    <a class="dropdown-item" href="{{url_for('admin.new_post')}}">博文</a>
+                    <a class="dropdown-item" href="{{url_for('admin.manage_category')}}">分类</a>
+                </div>
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <!--渲染显示"管理"下拉菜单-->
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                arial-expanded="false">
+                    管理 <span class="caret"></span>
+                    {% if unread_comments%}
+                        <span class="badge badge-success">new</span>
+                    {% endif %}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropDown">
+                    <a class="dropdown-item" href="{{url_for('admin.manage_post')}}">博文</a>
+                    <a class="dropdown-item" href="{{url_for('admin.manage_category')}}">分类</a>
+                    <a class="dropdown-item" href="{{url_for('admin.manage_comment')}}">评论
+                     {% if unread_comments%}
+                            <span class="badge badge-success">{{unread_comments}}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </li>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <li class="nav-item {%if request.endpoint and request.endpoint=='admin.settings'%}active{% endif %}">
+                <a class="nav-link" href="#">设置</a>
+            </li>
+
+          {% endif %}
+
+      </ul>
+
+
+    </div>
+</nav>
+{% endblock nav%}
+
+<main class="container">
+    <!--根据flash的消息种类自动渲染不同样式-->
+    {% for message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{message[0]}}" role="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{message[1]}}
+        </div>
+    {% endfor %}
+    <!--正文主体-->
+    {% block content %}
+    {% endblock content %}
+
+    <!--页面脚注-->
+    {% block footer %}
+    <br>
+    <hr>
+    <p class="float-left">
+        <small>
+            Copyright：{{admin.name}}
+            &nbsp;&nbsp; | &nbsp;&nbsp;
+            博客源代码：<a href="https://github.com/lengke">Github</a>
+            &nbsp;&nbsp; | &nbsp;&nbsp;
+            我的微信公众号：姓冷名轲（ID:woshilengke）
+        </small>
+    </p>
+    <p class="float-right">
+        <small>
+            {% if current_user.is_authenticated%}
+                <a href="{{url_for('auth.logout', next=request.full_path)}}">登出</a>
+            {% else %}
+                <a href="{{url_for('auth.login', next=request.full_path)}}">管理员登陆</a>
+            {% endif %}
+        </small>
+    </p>
+    <br>
+    <br>
+    <br>
+    {% endblock footer %}
+</main>
+
+<!--引用代码-->
+{% block scripts %}
+<script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.2.1.slim.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+{{ moment.include_moment(local_js=url_for('static', filename='js/moment-with-locales.min.js')) }}
+{{moment.locale(auto_detect=True)}}
+{% endblock scripts %}
+</body>
+</html>

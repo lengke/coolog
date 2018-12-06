@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}查看分类{% endblock title%}
+
+{% block content%}
+
+<h2>查看分类"{{category.name}}"的所有文章</h2>
+{% include 'blog/_posts.html'%}
+
+{% endblock content%}

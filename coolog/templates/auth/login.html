@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}登陆{% endblock title%}
+
+{% block content %}
+
+{% if current_user.is_authenticated%}
+    <h4>管理员账号已经登陆，现在你可以：</h4>
+    <p><h4><a href="{{url_for('auth.logout', next=request.full_path)}}">登出</a></h4></p>
+{% else %}
+    <div class="container h-100">
+        <div class="row h-100 page-header justify-content-center align-items-center">
+                <h1>管理员登陆</h1>
+        </div>
+        <div class="row h-100 justify-content-center align-items-center">
+                {{ render_form(form, extra_classes='col-6') }}
+        </div>
+    </div>
+{% endif %}
+
+{% endblock content %}
+

@@ -1,0 +1,54 @@
+{% from "bootstrap/pagination.html" import render_pagination %}
+{% if posts%}
+<br>
+{% for post in posts %}
+<h2 class="text-primary">
+    <a class="text-primary" href="{{ url_for('blog.show_post', post_id=post.id)}}">
+        {{post.title}}
+    </a>
+</h2>
+<br>
+<p>
+        {{post.body|striptags|truncate}}
+        ....<a href="{{ url_for('blog.show_post', post_id=post.id)}}">read more</a>
+</p>
+<br>
+<small>
+    评论：
+    <a href="{{ url_for('blog.show_post', post_id=post.id)}}#comments">
+        {{post.its_comments|length}}条
+    </a>
+    &nbsp;&nbsp;
+    分类：
+    <a href="{{ url_for('blog.show_category', category_id=post.its_category.id)}}">
+        {{post.its_category.name}}
+    </a>
+    <span class="float-right">{{ moment(post.timestamp).format('lll') }}</span>
+</small>
+<br>
+    <!--管理员编辑或删除文章的按钮-->
+    {% if current_user.is_authenticated %}
+        <a class="btn btn-info btn-sm" href="{{url_for('admin.edit_post', post_id = post.id)}}">
+            编辑
+        </a>
+        <form class="inline" method="post" action="{{url_for('admin.delete_post', post_id=post.id, next=request.full_path)}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+            删除
+        </button>
+        </form>
+    {% endif %}
+
+<hr>
+{% endfor %}
+
+<br>
+
+<p>总共{{pagination.total}}篇文章，本页显示{{posts|length}}篇</p>
+<br>
+{{render_pagination(pagination)}}
+{% else %}
+<div class="tip">
+    <h5>空空如也~</h5>
+</div>
+{% endif %}

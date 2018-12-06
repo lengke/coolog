@@ -1,0 +1,98 @@
+{% from "bootstrap/pagination.html" import render_pagination %}
+
+{% extends "base.html" %}
+
+{% block title %}评论管理{% endblock title%}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>评论管理</h1>
+</div>
+<br>
+<p>当前评论总数：{{pagination.total}}</p>
+<hr>
+
+{% if comments%}
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>所属文章</th>
+        <th>评论内容</th>
+        <th>评论作者</th>
+        <th>发布时间</th>
+        <th>是否为回复</th>
+        <th>审核状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for comment in comments %}
+    <tr>
+        <td>{{loop.index + (pagination.page-1)* pagination.per_page }}</td>
+        <td><a href="{{url_for('blog.show_post', post_id=comment.its_post.id)}}">{{comment.its_post.title}}</a></td>
+        <td>{{comment.body}}</td>
+        <td>
+            {% if comment.from_admin%}
+            <strong class="text-success">{{comment.author}}</strong>
+            {% else %}
+            {{comment.author}}
+            {% endif %}
+        </td>
+        <td>{{moment(comment.timestamp).format('lll')}}</td>
+        <td>
+            {% if comment.replied_id%}
+            <strong class="text-primary">Yes</strong>
+            {% else %}
+            No
+            {% endif %}
+        </td>
+        <td>
+            {% if comment.reviewed%}
+            已审核
+            {% else %}
+            <strong class="text-danger">未审核</strong>
+            {% endif %}
+        </td>
+        <td>
+
+            <a class="btn btn-info btn-sm" href="{{url_for('admin.review_comment',comment_id=comment.id, next=request.full_path)}}">
+            {% if comment.reviewed%}
+                打回
+            {% else %}
+                通过
+            {% endif %}
+            </a>
+            <form class="inline" method="post" action="{{url_for('admin.delete_comment', comment_id=comment.id, next=request.full_path)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                    删除
+                </button>
+            </form>
+
+
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+
+</table>
+
+
+<div class="page-footer">
+    {{render_pagination(pagination)}}
+</div>
+
+
+{% else %}
+
+<div class="tip">还没有任何评论</div>
+
+{% endif %}
+
+
+{% endblock content %}

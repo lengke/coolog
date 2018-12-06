@@ -1,0 +1,29 @@
+{% from 'bootstrap/form.html' import render_form %}
+{% extends "base.html" %}
+
+{% block title %}编辑分类{% endblock title%}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>编辑分类名称</h1>
+</div>
+<br>
+<p>当前分类总数：{{categories|length}}</p>
+<p>已存在的分类名称：</p>
+
+<ul>
+    {% for category in categories %}
+    <li><strong>{{category.name}}</strong></li>
+    {% endfor %}
+</ul>
+<hr>
+<p><h4>编辑分类</h4></p>
+
+
+<div>
+   {{ render_form(form) }}
+</div>
+
+
+{% endblock content %}
