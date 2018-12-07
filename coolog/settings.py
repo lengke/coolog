@@ -25,7 +25,7 @@ class DevelopmentConfig(BaseConfig):
 
 
 class ProductionConfig(BaseConfig):
-	pass
+	SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI")
 
 
 configlist = {
