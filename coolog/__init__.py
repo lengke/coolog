@@ -11,7 +11,7 @@ from flask_wtf.csrf import CSRFError
 
 
 # 创建工厂函数
-def create_app(config_name="development"):
+def create_app(config_name="production"):
 
 	app = Flask("coolog")
 	# 设置当前启用的config对象
@@ -31,9 +31,9 @@ def create_app(config_name="development"):
 def register_extensions(app):
 	bootstrap.init_app(app)
 	moment.init_app(app)
-	migrate.init_app(app)
 	login_manager.init_app(app)
 	db.init_app(app)
+	migrate.init_app(app,db)
 	csrf.init_app(app)
 	ckeditor.init_app(app)
 

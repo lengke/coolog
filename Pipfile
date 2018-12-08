@@ -17,6 +17,7 @@ flask-login = "*"
 unidecode = "*"
 pymysql = "*"
 python-dotenv = "*"
+gunicorn = "*"
 
 [dev-packages]
 

@@ -11,10 +11,10 @@ from flask_wtf.csrf import CSRFProtect
 bootstrap = Bootstrap()
 moment = Moment()
 mail = Mail()
-migrate = Migrate()
 login_manager = LoginManager()
 ckeditor = CKEditor()
 db = SQLAlchemy()
+migrate = Migrate()
 csrf = CSRFProtect()
 
 login_manager.session_protection = 'strong'
