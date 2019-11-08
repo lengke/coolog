@@ -9,7 +9,7 @@
 </h2>
 <br>
 <p>
-        {{post.body|striptags|truncate}}
+        {{post.body|striptags|truncate(80)}}
         ....<a href="{{ url_for('blog.show_post', post_id=post.id)}}">read more</a>
 </p>
 <br>

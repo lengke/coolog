@@ -36,7 +36,8 @@ def show_post(post_id):
 	else:
 		form = CommentForm()
 		from_admin = False
-		reviewed = False
+		# 修改下面的值可以使得用户评论默认需要/不需要审核
+		reviewed = True
 
 	# 避免普通用户用admin的名字发评论
 	if form.validate_on_submit():
@@ -63,7 +64,10 @@ def show_post(post_id):
 		if current_user.is_authenticated:
 			flash("管理员，您的评论已成功发表", "success")
 		else:
-			flash("评论已进入审核队列", "success")
+			if comment.reviewed is True:
+				flash("评论成功，点击评论区的[最新]可查看", "success")
+			else:
+				flash("评论已进入审核队列", "success")
 		return redirect(url_for("blog.show_post", post_id=post.id))
 	return render_template("blog/post.html", post=post, pagination=pagination, comments=comments, form=form)
 

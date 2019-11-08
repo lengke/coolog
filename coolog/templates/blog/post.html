@@ -52,7 +52,7 @@
 
 {% if post.can_comment%}
         <div class="comments" id="comments">
-            <h4 class="py-3">共{{post.its_comments|length}}条评论：
+            <h4 class="py-3">共{{post.its_comments|length}}条评论(从旧到新排序)：
 
             <small>
                 <a href="{{url_for('blog.show_post', post_id=post.id, page=pagination.pages or 1)}}#comments">最新

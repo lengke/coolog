@@ -3,12 +3,17 @@ from coolog.fakes import fake_admin, fake_category, fake_comment, fake_post
 from coolog.extensions import db
 from coolog.models import *
 
+"""
+flask cleardb 清空重建数据库，无任何实际数据生成，慎用
+flask fakeall 清空重建数据库，并用假数据填充 默认用户名和密码是admin admin
+flask init 初始化项目，用户名和密码自定义输入
+"""
 
 def register_commands(app):
 	# 清空数据库并重建的命令
 	@app.cli.command()
 	@click.option("--drop", is_flag=True, help="delete all tables")
-	def dbinit(drop):
+	def cleardb(drop):
 		if drop:
 			db.drop_all()
 			click.echo("databases drop_all succeed!")
@@ -22,7 +27,7 @@ def register_commands(app):
 	@click.option("--category", default=10, help="number of categories")
 	@click.option("--post", default=30, help="number of posts")
 	@click.option("--comment", default=500, help="number of comments")
-	def forge(category, post, comment):
+	def fakeall(category, post, comment):
 		db.drop_all()
 		db.create_all()
 		# 创建管理员
@@ -61,7 +66,7 @@ def register_commands(app):
 			username = username,
 			name = "Leng Ke",
 			about="关注我的微信公众号：姓冷名轲（ID:woshilengke）",
-			blog_title="流浪地球",
+			blog_title="浪子不回头",
 			blog_sub_title="Powered by Python Flask"
 		)
 		admin.set_password(password)

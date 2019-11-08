@@ -12,10 +12,10 @@ def fake_admin():
 		username= "admin",
 		name = "Leng Ke",
 		about ="关注我的微信公众号：姓冷名轲（ID:woshilengke）",
-		blog_title ="流浪地球",
+		blog_title ="浪子不回头",
 		blog_sub_title="Powered by Python Flask"
 	)
-	admin.set_password("helloflask")
+	admin.set_password("admin")
 	db.session.add(admin)
 	db.session.commit()
 

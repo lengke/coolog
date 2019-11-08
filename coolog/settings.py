@@ -20,12 +20,11 @@ class BaseConfig():
 
 
 class DevelopmentConfig(BaseConfig):
-	SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI")
-
+	SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI_DEV")
 
 
 class ProductionConfig(BaseConfig):
-	SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI")
+	SQLALCHEMY_DATABASE_URI = os.getenv("DB_URI_PRO")
 
 
 configlist = {

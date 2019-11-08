@@ -7,4 +7,5 @@ if os.path.exists(dotenv_path):
 
 from coolog import create_app
 
-app = create_app('production')
+# 正式上线应将development改为production
+app = create_app('development')
