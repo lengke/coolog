@@ -7,6 +7,4 @@ if os.path.exists(dotenv_path):
 
 from coolog import create_app
 
-# 正式上线应将development改为production
-# 并且正式上线环境记得建立coolog_pro数据库
-app = create_app('development')
+app = create_app('production')
