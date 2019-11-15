@@ -15,7 +15,7 @@ def create_app(config_name=None):
 
 	app = Flask("coolog")
 	if config_name is None:
-		config_name = "production"
+		config_name = "development"
 
 	# 设置当前启用的config对象
 	current_config = configlist.get(config_name)
